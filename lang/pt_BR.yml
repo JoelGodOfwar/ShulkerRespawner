@@ -1,0 +1,8 @@
+version: 1.0.1
+newversion: Nova versao disponivel!
+noperm: Voce nao tem permissao para usar
+boolean: Argumento deve ser booleano. Uso
+reload: Recarrega este plugin.
+toggledebug: Alterna temporariamente a depuração.
+debugtrue: Depuração definida como boolean.
+reloaded: ShulkerRespawner foi recarregado.

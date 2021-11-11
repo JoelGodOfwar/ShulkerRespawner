@@ -1,0 +1,8 @@
+version: 1.0.1
+newversion: Nieuwe versie beschikbaar!
+noperm: Je hebt geen toestemming om te gebruiken
+boolean: Argument moet boolean zijn. Gebruik
+reload: Laadt deze plug-in opnieuw.
+toggledebug: Schakelt tijdelijk debug in.
+debugtrue: Foutopsporing ingesteld op boolean.
+reloaded: ShulkerRespawner is opnieuw geladen.

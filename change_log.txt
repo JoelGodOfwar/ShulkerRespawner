@@ -1,0 +1,9 @@
+1.13_1.0.5.D1
+Split lang.yml into separate language files.
+Added tab complete for commands.
+Serialized update checker.
+D2- Added random configs for endermen to shulker spawns
+1.13_1.0.6.D2
+Changed how End Cities are found and reduced possibility of farms. First 1.17 update.
+1.13_1.0.7
+Fixed an error where plugin would spam console with messages.

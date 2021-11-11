@@ -1,0 +1,8 @@
+version: 1.0.1
+newversion: K dispozici nová verze!
+noperm: Nemáte oprávnení k použití
+boolean: Argument musí být booleovský. Používání
+reload: Znovu načte tento plugin.
+toggledebug: Dočasně přepíná ladění.
+debugtrue: Ladění nastaveno na boolean.
+reloaded: ShulkerRespawner byl znovu načten.

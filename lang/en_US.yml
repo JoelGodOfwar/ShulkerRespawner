@@ -1,0 +1,8 @@
+version: 1.0.1
+newversion: New version available!
+noperm: You do not have permission to use
+boolean: Argument must be boolean. Usage
+debugtrue: Debug set to boolean.
+toggledebug: Temporarily toggles debug.
+reload: Reloads this plugin.
+reloaded: ShulkerRespawner has been reloaded.

@@ -1,0 +1,8 @@
+version: 1.0.1
+newversion: 有新的版本可以使用!
+noperm: 你没有使用此命令的权限
+boolean: 后面的参数必须为布尔值(true[开启]或者false[关闭]). 使用方法
+reload: 重新加载此插件。
+toggledebug: 临时切换调试。
+debugtrue: 调试设置为boolean。
+reloaded: ShulkerRespawner已重新加载。

@@ -1,0 +1,8 @@
+version: 1.0.1
+newversion: Nouvelle version disponible!
+noperm: Vous n'êtes pas autorisé à utiliser
+boolean: L'argument doit être booléen . Usage
+reload: Recharge ce plugin.
+toggledebug: Bascule temporairement le débogage.
+debugtrue: Debug défini sur boolean.
+reloaded: ShulkerRespawner a été rechargé.

@@ -1,0 +1,8 @@
+version: 1.0.1
+newversion: New vershun available!
+noperm: U do not has permishun to uz
+boolean: Argumnt mus be bolein?? usAge
+debugtrue: Dbug sit 2 boolean.
+toggledebug: Tmpor harily toggles dbug.
+reload: Relods dis plugn.
+reloaded: ShulkerRespawner haz ben relodsed.

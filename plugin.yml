@@ -1,0 +1,25 @@
+name: ShulkerRespawner
+main: com.github.joelgodofwar.sr.ShulkerRespawner
+version: 1.13_1.0.8.D1
+author: JoelGodOfWar(JoelYahwehOfWar)
+api-version: 1.13
+
+commands:
+  sr:
+    description: Shows ShulkerRespawner help.
+    usage: /<command>
+    alias: shulkerrespawner
+    
+permissions:
+  shulkerrespawner.op:
+    description: Needed for /SR command(s)
+    default: false
+  shulkerrespawner.reload:
+    description: Allows the player to use "/sr reload" command.
+    default: op
+  shulkerrespawner.toggledebug:
+    description: Allows the player to use "/sr toggledebug" command.
+    default: op
+  shulkerrespawner.showUpdateAvailable:
+    description: Shows player that there is a version update.
+    default: op

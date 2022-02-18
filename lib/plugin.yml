@@ -1,0 +1,6 @@
+name: ShulkerRespawnerLib
+main: com.github.joelgodofwar.srl.ShulkerRespawnerLib
+version: 1.0.0
+author: JoelGodOfWar(JoelYahwehOfWar)
+api-version: 1.13
+loadbefore: [ShulkerRespawner]

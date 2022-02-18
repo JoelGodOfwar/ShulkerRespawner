@@ -1,8 +1,9 @@
 name: ShulkerRespawner
 main: com.github.joelgodofwar.sr.ShulkerRespawner
-version: 1.13_1.0.8.D1
+version: 1.13_1.0.8
 author: JoelGodOfWar(JoelYahwehOfWar)
 api-version: 1.13
+softdepend: [ShulkerRespawnerLib]
 
 commands:
   sr:

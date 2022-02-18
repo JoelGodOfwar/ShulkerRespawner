@@ -258,7 +258,6 @@ public class CSEHandler_1_17 implements Listener {
                 }
             }
         }
-
         return false;
     }
 	

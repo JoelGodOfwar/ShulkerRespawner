@@ -2,11 +2,13 @@ package com.github.joelgodofwar.sr;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.file.CopyOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.security.CodeSource;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -45,7 +47,9 @@ import com.github.joelgodofwar.sr.events.CSEHandler_1_16_1;
 import com.github.joelgodofwar.sr.events.CSEHandler_1_16_2;
 import com.github.joelgodofwar.sr.events.CSEHandler_1_16_3;
 import com.github.joelgodofwar.sr.events.CSEHandler_1_17;
+import com.github.joelgodofwar.sr.events.CSEHandler_1_18;
 import com.github.joelgodofwar.sr.util.Ansi;
+import com.github.joelgodofwar.sr.util.JarUtils;
 import com.github.joelgodofwar.sr.util.Metrics;
 import com.github.joelgodofwar.sr.util.SendJsonMessages;
 import com.github.joelgodofwar.sr.util.UpdateChecker;
@@ -275,6 +279,45 @@ public class ShulkerRespawner  extends JavaPlugin implements Listener{
     		getServer().getPluginManager().registerEvents( new CSEHandler_1_16_3(this), this);
 		}else if( version.contains("1_17_R1") ){
 			getServer().getPluginManager().registerEvents( new CSEHandler_1_17(this), this);
+		}else if( version.contains("1_18_R1") ){
+			CodeSource codeSource = ShulkerRespawner.class.getProtectionDomain().getCodeSource();
+			File jarFile = null;
+			try {
+				jarFile = new File(codeSource.getLocation().toURI().getPath());
+			} catch (URISyntaxException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			String jarDir = jarFile.getParentFile().getPath();
+			
+			try {
+	            final File[] libs = new File[] {
+	                    new File(getDataFolder(), "ShulkerRespawnerLib-1.0.0.jar") };
+	            File libFile = new File(jarDir + File.separatorChar + "ShulkerRespawnerLib-1.0.0.jar");
+	            for (final File lib : libs) {
+	                if (!libFile.exists()) {
+	                    boolean didIt = JarUtils.extractFromJar(lib.getName(),
+	                    		jarDir + File.separatorChar + "ShulkerRespawnerLib-1.0.0.jar");
+	                    getLogger().info("ShulkerRespawnerLib-1.0.0.jar copied to plugins=" + didIt);
+	                }else {
+	                	getLogger().info("ShulkerRespawnerLib-1.0.0.jar exists!");
+	                }
+	            }
+	            
+	                if (!libFile.exists()) {
+	                	getLogger().warning(
+	                            "There was a critical error loading My plugin! Could not find lib: "
+	                                    + libFile.getName());
+	                    Bukkit.getServer().getPluginManager().disablePlugin(this);
+	                    return;
+	                }
+	                logWarn("ShulkerRespawner must be realoaded for ShulkerRespawnerLib to work.");
+	                //addClassPath(JarUtils.getJarUrl(lib));
+	            
+	        } catch (final Exception e) {
+	            e.printStackTrace();
+	        }
+			getServer().getPluginManager().registerEvents( new CSEHandler_1_18(this), this);
 		}else{
 			logWarn("Not compatible with this version of Minecraft:" + version);
 			getServer().getPluginManager().disablePlugin(this);
@@ -348,6 +391,22 @@ public class ShulkerRespawner  extends JavaPlugin implements Listener{
 		
 	
 	}
+	/**
+	private void addClassPath(final URL url) throws IOException {
+        final URLClassLoader sysloader = (URLClassLoader) ClassLoader
+                .getSystemClassLoader();
+        final Class<URLClassLoader> sysclass = URLClassLoader.class;
+        try {
+            final Method method = sysclass.getDeclaredMethod("addURL",
+                    new Class[] { URL.class });
+            method.setAccessible(true);
+            method.invoke(sysloader, new Object[] { url });
+        } catch (final Throwable t) {
+            t.printStackTrace();
+            throw new IOException("Error adding " + url
+                    + " to system classloader");
+        }
+    }//*/
 	
 	@Override // TODO: onDisable
 	public void onDisable(){

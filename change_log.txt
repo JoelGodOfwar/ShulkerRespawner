@@ -7,3 +7,6 @@ D2- Added random configs for endermen to shulker spawns
 Changed how End Cities are found and reduced possibility of farms. First 1.17 update.
 1.13_1.0.7
 Fixed an error where plugin would spam console with messages.
+1.13_1.0.8
+D2-Added a custom library that makes SR work in 1.18, server must restarted after SR copies the library.
+D3-Added a check for ShulkerRespawnerLib if running on 1.18+ server, to prevent an error.

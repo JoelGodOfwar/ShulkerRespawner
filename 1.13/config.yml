@@ -1,7 +1,0 @@
-# Change to false to stop auto-update-check.
-auto-update-check: true
-# Set to true before sending a log about an issue.
-# Logs trace data required to pinpoint where errors are.
-debug: false
-# Set the language to use, en_US, nl_NL, lol_US, fr_FR, de_DE, zh_CN, cs-CZ, pt_BR
-lang: en_US

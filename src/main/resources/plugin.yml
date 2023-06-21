@@ -3,6 +3,7 @@ main: com.github.joelgodofwar.sr.ShulkerRespawner
 version: 1.13_1.0.13
 author: JoelGodOfWar(JoelYahwehOfWar)
 api-version: 1.13
+folia-supported: true
 
 commands:
   sr:

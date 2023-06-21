@@ -1,0 +1,35 @@
+1.0.14
+D1	
+1.0.13
+D1	
+D2	Fixed 1.19.4 support in Library.
+D3	Switched to i18n lang files, reworked update checker.
+D4	Added 1.20 support.
+1.0.12
+D1	Added 1.19.4 support, changed language support to i18n.
+D2	
+1.0.11
+D1	Added a persistent tag to shulkers spawned by SR
+D2	Added 1.19.2 to the 1.19 event handler, may need a separate event handler.
+D3	Confirmed that /sr check works in this version, shulkers spawned by SR will have a persistent tag of ShulkerRespawner.  Also confirmed to work in 1.19.2.
+D4	Added 1.19.3 support.
+	Disabled Check command for release to prevent abuse.
+1.0.10
+D1	Switched to shaded jar, libs are no longer required.
+	Added 1.19.1 support.
+1.0.9
+D1	1.18.2 compatibility
+D2	Minor changes to UpdateChecker Notifications.
+D3	Added Libs for 1.17, 1.17.1, 1.18, 1.18.1, 1.18.2, and 1.19.
+1.0.8
+D2	Added a custom library that makes SR work in 1.18, server must restarted after SR copies the library.
+D3	Added a check for ShulkerRespawnerLib if running on 1.18+ server, to prevent an error.
+1.0.7
+Fixed an error where plugin would spam console with messages.
+1.0.6
+D2	Changed how End Cities are found and reduced possibility of farms. First 1.17 update.
+1.0.5
+D1	Split lang.yml into separate language files.
+	Added tab complete for commands.
+	Serialized update checker.
+D2	Added random configs for endermen to shulker spawns

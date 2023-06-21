@@ -1,0 +1,29 @@
+# DO NOT CHANGE VERSION
+version: 1.0.1
+# Change to false to stop auto-update-check.
+auto_update_check: true
+# Set to true before sending a log about an issue.
+# Logs trace data required to pinpoint where errors are.
+debug: false
+# Set the language to use, en_US, nl_NL, lol_US, fr_FR, de_DE, zh_CN, cs-CZ, pt_BR
+lang: en_US
+# 
+console:
+# Should NEG use it's full name or NEG in console messages?
+  longpluginname: true
+# 
+double_shulker_chance:
+# should SR do a chance of double shulker_shell drop
+  enabled: true
+# Must be a double value 1.00=100%, 0.50=50%
+# looting adds 0.01 per level. 
+  rate: 0.50
+enderman_to_shulker_chance:
+# should SR do a chance of enderman becoming a shulker
+  enabled: false
+# Must be a double value 1.00=100%, 0.50=50%
+  rate: 0.75
+# if the chance fails should an enderman spawn
+  spawn_enderman_on_fail: true
+# The distance bewteen entities for shulker to spawn
+radius_between_spawns: 10

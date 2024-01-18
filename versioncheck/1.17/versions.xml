@@ -1,9 +1,8 @@
 <versions>
   <release>
-    <version>1.17_1.0.14</version>
-    <notes>D1	Folia testing
-D2	Dropped support of MC versions under 1.17. Fixed SR to work with 1.20.1
-</notes>
+    <version>1.17_1.0.15</version>
+    <notes>D1	1.20.2 support added.
+D2	1.20.4 support added to library.</notes>
     <link>https://www.spigotmc.org/resources/shulkerrespawner.73638/history</link>
   </release>
   <developer>

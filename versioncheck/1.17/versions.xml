@@ -1,18 +1,18 @@
 <versions>
   <release>
-    <version>1.17_1.0.16</version>
-    <notes>D1	Switched from getting entities from world to chunk in attempt to work with folia.
-D2	Added better Logging and Error handling.
-D3	Removed Birthday Message code.
-D4	Updated SRLib to 0.1.7 to fix Paper errors.
-D5	SRLib now 0.1.9 for MC 1.21</notes>
+    <version>1.17_1.0.17</version>
+    <notes>D1	1.21.3 support added.
+D2	Added 1.21 event handler parser.
+D3	Added 1.21.4 event parser.
+D4	Added 1.21.5 to Library.</notes>
     <link>https://www.spigotmc.org/resources/shulkerrespawner.73638/history</link>
   </release>
   <developer>
-    <version>1.17_1.0.14.D2</version>
-    <notes>D1	Folia testing
-D2	Dropped support of MC versions under 1.17. Fixed SR to work with 1.20.1
-</notes>
+    <version>1.17_1.0.17.D4</version>
+    <notes>D1	1.21.3 support added.
+D2	Added 1.21 event handler parser.
+D3	Added 1.21.4 event parser.
+D4	Added 1.21.5 to Library.</notes>
     <link>https://discord.com/channels/654087250665144321/656328786186600510</link>
   </developer>
 </versions>

@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>ShulkerRespawner</groupId>
   <artifactId>ShulkerRespawner</artifactId>
-  <version>1.17_1.0.16</version>
+  <version>1.20_1.0.20.D2-DEV</version>
   <name>ShulkerRespawner</name>
   <description>Respawns shulkers when Endermen try to spawn in End Cities</description>
   <scm>
@@ -60,6 +60,10 @@
     </plugins>
   </build>
   <repositories>
+    <repository>
+      <id>local-repo</id>
+      <url>file://${user.home}/.m2/repository</url>
+    </repository>
 	<repository>
       <id>papermc</id>
       <url>https://repo.papermc.io/repository/maven-public/</url>
@@ -85,8 +89,14 @@
   <dependencies>
     <dependency>
       <groupId>lib.github.joelgodofwar</groupId>
+      <artifactId>core-utils</artifactId>
+      <version>RELEASE</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>lib.github.joelgodofwar</groupId>
       <artifactId>ShulkerRespawnerLib</artifactId>
-      <version>0.2.1-SNAPSHOT</version>
+      <version>0.2.8-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.spigotmc</groupId>

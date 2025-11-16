@@ -1,0 +1,13 @@
+<versions>
+  <release>
+    <version>1.17_1.0.19</version>
+    <notes>D1    Added 1.21.8 and 1.21.9 to Library.</notes>
+    <link>https://www.spigotmc.org/resources/shulkerrespawner.73638/history</link>
+  </release>
+  <developer>
+    <version>1.20_1.0.20.D2</version>
+    <notes>D1  Changed from tellraw to TextComponent Json sender.
+    D2  Added 1.21.10 handler to Library.</notes>
+    <link>https://discord.com/channels/654087250665144321/656328786186600510</link>
+  </developer>
+</versions>

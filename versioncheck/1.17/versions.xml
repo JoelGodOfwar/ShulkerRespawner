@@ -5,8 +5,10 @@
     <link>https://www.spigotmc.org/resources/shulkerrespawner.73638/history</link>
   </release>
   <developer>
-    <version>1.20_1.0.20.D1</version>
-    <notes>D1  Changed from tellraw to TextComponent Json sender.</notes>
+    <version>1.20_1.0.20.D3</version>
+    <notes>D1  Changed from tellraw to TextComponent Json sender.
+    D2  Added 1.21.10 handler to Library.
+    D3  Swapped to per player randoms for double shulker shells, and using whole numbers for percents.</notes>
     <link>https://discord.com/channels/654087250665144321/656328786186600510</link>
   </developer>
 </versions>

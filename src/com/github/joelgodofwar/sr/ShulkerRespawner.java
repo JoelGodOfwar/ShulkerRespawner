@@ -29,6 +29,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Shulker;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -816,6 +817,9 @@ public class ShulkerRespawner  extends JavaPlugin implements Listener{
 			debug = true;
 			LOGGER.log("jarfile contains -DEV, debug set to true.");
 		}
+
+		HandlerList.unregisterAll(this);
+		getServer().getPluginManager().registerEvents(this, this);
 
 		String packageName = this.getServer().getClass().getPackage().getName();
 		String version = packageName.substring(packageName.lastIndexOf('.') + 2);

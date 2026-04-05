@@ -40,11 +40,9 @@ import com.github.joelgodofwar.sr.common.error.Report;
 @SuppressWarnings("static-access")
 public class CSEHandler_1_19 implements Listener {
 	ShulkerRespawner SR;
-	boolean debug;
 
 	public CSEHandler_1_19(final ShulkerRespawner plugin){
 		SR = plugin;
-		debug = plugin.debug;
 	}
 
 	@EventHandler
@@ -80,7 +78,7 @@ public class CSEHandler_1_19 implements Listener {
 							String packageName = SR.getServer().getClass().getPackage().getName();
 							String version = packageName.substring(packageName.lastIndexOf('.') + 2);
 
-							boolean result = ShulkerRespawnerLib.playerInsideStructure(entity, version, debug);
+							boolean result = ShulkerRespawnerLib.playerInsideStructure(entity, version, SR.debug);
 							SR.LOGGER.debug("result=" + result);
 							if(!result) {
 								SR.LOGGER.debug("Enderman is not in an EndCity.");

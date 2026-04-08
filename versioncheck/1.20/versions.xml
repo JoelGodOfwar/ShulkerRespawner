@@ -5,14 +5,15 @@
     <link>https://www.spigotmc.org/resources/shulkerrespawner.73638/history</link>
   </release>
   <developer>
-    <version>1.20_1.0.20.D7</version>
+    <version>1.20_1.0.20.D8</version>
     <notes>D1  Changed from tellraw to TextComponent Json sender.
 D2  Added 1.21.10 handler to Library.
 D3  Swapped to per player randoms for double shulker shells, and using whole numbers for percents.
 D4  Added 1.21.11 handler to Library.
 D5  Fixed missing dependency for 1.21.11 handler.
 D6  Updated to 26.1
-D7  SR now respects config debug fully.</notes>
+D7  SR now respects config debug fully.
+D8  Fix debug in logger.</notes>
     <link>https://discord.com/channels/654087250665144321/656328786186600510</link>
   </developer>
 </versions>

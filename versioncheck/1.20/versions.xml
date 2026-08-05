@@ -2,11 +2,11 @@
   <release>
     <version>1.20_1.0.21</version>
     <notes>D1  Added 26.2 handler to Library.</notes>
-    <link>https://www.spigotmc.org/resources/shulkerrespawner.73638/history</link>
+    <link>https://dev.bukkit.org/projects/shulkerrespawner/files</link>
   </release>
   <developer>
-    <version>1.20_1.0.21.D1</version>
-    <notes>D1    Added 26.2 handler to Library.</notes>
-    <link>https://discord.com/channels/654087250665144321/656328786186600510</link>
+    <version>1.20_1.0.22.D1</version>
+    <notes>D1  Update checker no longer treats .D builds as newer than their release.</notes>
+    <link>https://dev.bukkit.org/projects/shulkerrespawner/files</link>
   </developer>
 </versions>

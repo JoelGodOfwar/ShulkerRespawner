@@ -1,4 +1,4 @@
-package com.github.joelgodofwar.sr.events;
+package com.github.joelgodofwar.sr.handlers;
 
 import org.bukkit.event.entity.CreatureSpawnEvent;
 

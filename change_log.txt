@@ -1,6 +1,18 @@
+1.20_1.0.23
+D1 Library 0.3.9: version ranges in VersionMatcher; unknown newer MC uses last wrapper instead of disabling.
+1.20_1.0.22
+D1	Update checker no longer treats .D builds as newer than their release.
+1.20_1.0.21
+D1	Added 26.2 handler to Library.
 1.20_1.0.20
-D1  Changed from tellraw to TextComponent Json sender.
-D2  Added 1.21.10 handler to Library.
+D1	Changed from tellraw to TextComponent Json sender.
+D2	Added 1.21.10 handler to Library.
+D3	Swapped to per player randoms for double shulker shells, and using whole numbers for percents.
+D4	Added 1.21.11 handler to Library.
+D5	Fixed missing dependency for 1.21.11 handler.
+D6	Updated to 26.1
+D7	SR now respects config debug fully.
+D8	Fix debug in logger.
 1.0.19
 D1	Added 1.21.8 and 1.21.9 to Library
 1.0.18

@@ -1,6 +1,11 @@
-package com.github.joelgodofwar.sr.events;
+package com.github.joelgodofwar.sr.handlers;
 
+import com.github.joelgodofwar.sr.ShulkerRespawner;
+import com.github.joelgodofwar.sr.ShulkerRespawnerLib;
+import com.github.joelgodofwar.sr.common.PluginLibrary;
+import com.github.joelgodofwar.sr.common.error.Report;
 import org.bukkit.ChatColor;
+import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
@@ -12,12 +17,11 @@ import org.bukkit.entity.Squid;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
+import org.bukkit.persistence.PersistentDataType;
 
-import com.github.joelgodofwar.sr.ShulkerRespawner;
-import com.github.joelgodofwar.sr.ShulkerRespawnerLib;
-import com.github.joelgodofwar.sr.common.PluginLibrary;
-import com.github.joelgodofwar.sr.common.error.Report;
-
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 /**
 1.8		1_8_R1		1.8.3	1_8_R2
 1.8.8 	1_8_R3
@@ -32,122 +36,191 @@ import com.github.joelgodofwar.sr.common.error.Report;
 1.17.1	1_17_R1		1.18	1_18_R1
 1.18.2	1_18_R2		1.19	1_19_R1
  */
-
-public class CSEHandler_1_17 implements Listener {
+@SuppressWarnings("static-access")
+public class CSEHandler_1_19 implements Listener {
 	ShulkerRespawner SR;
-	boolean debug;
+	ShulkerRespawnerLib SRLib;
 
-	@SuppressWarnings("static-access")
-	public CSEHandler_1_17(final ShulkerRespawner plugin){
+	public CSEHandler_1_19(final ShulkerRespawner plugin){
 		SR = plugin;
-		debug = plugin.debug;
+		SRLib = new ShulkerRespawnerLib(SR, SR.coreUtils);
 	}
 
-	@SuppressWarnings("static-access")
 	@EventHandler
 	public void onCreatureSpawn(CreatureSpawnEvent event){ //onEntitySpawn(EntitySpawnEvent e) {
 		Entity entity = event.getEntity();
 		if(entity.getWorld().getEnvironment() != Environment.THE_END) {
 			return;
 		}
-
-		if( (entity instanceof Enderman) || (entity instanceof Squid) ){
+		if ( (entity instanceof Enderman) || (entity instanceof Squid) ){
 			try {
-				SR.LOGGER.debug("CSE 1.17 entity=\"" + entity.getType() + "\"");
-				SR.LOGGER.debug("CSE Environment=\"" + entity.getWorld().getEnvironment().toString() + "\"");
-				SR.LOGGER.debug("CSE Biome=\"" + entity.getLocation().getBlock().getBiome().toString() + "\"");
-				SR.LOGGER.debug("CSE isEndCity=\"" + isEndCity(entity.getLocation().getBlock()) + "\"");
-				Location location = entity.getLocation();
-				SR.LOGGER.debug("location=" + location);
+				SR.logger.debug("CSE 1.19.* entity=\"" + entity.getType() + "\"");
+				SR.logger.debug("CSE Environment=\"" + entity.getWorld().getEnvironment().toString() + "\"");
+				SR.logger.debug("CSE Biome=\"" + entity.getLocation().getBlock().getBiome().toString() + "\"");
+				SR.logger.debug("CSE isEndCity=\"" + isEndCity(entity.getLocation().getBlock()) + "\"");
 
-				SR.LOGGER.debug("CSE block=" + entity.getLocation().getBlock().getType().toString());
-				SR.LOGGER.debug("CSE " + ChatColor.GREEN + "isEndCity=" + isEndCity(entity.getLocation().getBlock()) + ChatColor.RESET);
+				Location location = entity.getLocation();
+				SR.logger.debug("location=" + location);
+				SR.logger.debug("CSE block=" + entity.getLocation().getBlock().getType().toString());
+				SR.logger.debug("CSE " + ChatColor.GREEN + "isEndCity=" + isEndCity(entity.getLocation().getBlock()) + ChatColor.RESET);
 				if(entity.getLocation().subtract(0, 3, 0).getBlock().getType().toString().contains("PURPUR")||
 						entity.getLocation().subtract(0, 2, 0).getBlock().getType().toString().contains("PURPUR")||
 						entity.getLocation().subtract(0, 1, 0).getBlock().getType().toString().contains("PURPUR")
 						||entity.getLocation().getBlock().getType().toString().contains("PURPUR")){
 
 					World world = entity.getWorld();
-					SR.LOGGER.debug("CSE radius_between_spawns=" + SR.getConfig().getInt("radius_between_spawns", 10));
+					SR.logger.debug("CSE radius_between_spawns=" + SR.getConfig().getInt("radius_between_spawns", 10));
 					if(!checkradius(entity, SR.getConfig().getInt("radius_between_spawns", 10))){ //5
+
+
 						if(isEndCity(entity.getLocation().getBlock())){
-							SR.LOGGER.debug("CSE radius=" + SR.getConfig().getInt("radius_between_spawns", 10));
+							SR.logger.debug("CSE radius=" + SR.getConfig().getInt("radius_between_spawns", 10));
 
 							String packageName = SR.getServer().getClass().getPackage().getName();
 							String version = packageName.substring(packageName.lastIndexOf('.') + 2);
-							if(SR.getMCVersion().equals("1.17")) {
 
-								boolean result = ShulkerRespawnerLib.playerInsideStructure(entity, version, debug);
-								SR.LOGGER.debug("result=" + result);
-								if(!result) {
-									SR.LOGGER.debug("Enderman is not in an EndCity.");
-									return;
-								}
-
-							}else if(SR.getMCVersion().equals("1.17.1")) {
-
-								boolean result = ShulkerRespawnerLib.playerInsideStructure(entity, version, debug);
-								SR.LOGGER.debug("result=" + result);
-								if(!result) {
-									SR.LOGGER.debug("Enderman is not in an EndCity.");
-									return;
-								}
-
+							boolean result = SRLib.playerInsideStructure(entity, version, SR.debug);
+							SR.logger.debug("result=" + result);
+							if(!result) {
+								SR.logger.debug("Enderman is not in an EndCity.");
+								return;
 							}
 
 
 						}else{
-							SR.LOGGER.debug("endcity not found");
+							SR.logger.debug("endcity not found");
 							return;
 						}
-						boolean spawnCheck = SpawnIt(SR.getConfig().getDouble("enderman_to_shulker_chance.rate", 0.75));
+						boolean spawnCheck = SpawnIt( SR.getConfig().getInt("enderman_to_shulker_chance.rate", 75));
 						if(spawnCheck) {
 							event.setCancelled(true);
-							SR.LOGGER.debug(ChatColor.GREEN + "CSE Enderman tried to spawn at " + location + " and a shulker was spawned in it's place.");
+							SR.logger.debug(ChatColor.GREEN + "CSE Enderman tried to spawn at " + location + " and a shulker was spawned in it's place.");
 							world.spawn(location, Shulker.class);
-						}else {
-							SR.LOGGER.debug(ChatColor.GREEN + "CSE chance failed Enderman spawned at " + location);
+							Collection<Entity> collection = world.getNearbyEntities(location, 2, 2, 2);
+							for (Entity e : collection) {
+								if(e instanceof Shulker) {
+									e.getPersistentDataContainer().set(SR.NAME_KEY, PersistentDataType.STRING, "ShulkerRespawner");
+									SR.logger.debug(ChatColor.GREEN + "Shulker spawned at " + location + ", has been tagged by SR.");
+								}
+							}
+						} else {
+							SR.logger.debug(ChatColor.GREEN + "CSE chance failed Enderman spawned at " + location);
 						}
-					}else{
-						SR.LOGGER.debug("CSE Radius too close");
+					} else { //5
+						SR.logger.debug("CSE Radius too close");
 					}
-				}else {
-					SR.LOGGER.debug("CSE Block Error.");
+				} else {
+					SR.logger.debug("CSE Block Error.");
 				}
-				SR.LOGGER.debug("CSE End CSE");
+				SR.logger.debug("CSE End CSE");
 			}catch(Exception e) {
 				SR.reporter.reportDetailed(this, Report.newBuilder(PluginLibrary.ERROR_HANDLING_CREATURESPAWNEVENT).error(e));
 			}
 		}
+
 	}
 
-	public boolean SpawnIt(double chancepercent){// TODO: DropIt
-		if(!SR.getConfig().getBoolean("enderman_to_shulker_chance.enabled", false)) {
-			SR.LOGGER.debug("SI  enderman_to_shulker_chance.enabled=false, returning trueline:344");
+	/**
+	 * Returns true if something should happen based on a whole-number percentage chance.
+	 * e.g. 50 = 50% chance, 100 = always, 0 = never
+	 */
+	public boolean SpawnIt(int chancePercent) {
+		if (!SR.getConfig().getBoolean("enderman_to_shulker_chance.enabled", false)) {
+			SR.logger.debug("spawnIt: enderman_to_shulker_chance.enabled=false → allowing spawn");
 			return true;
 		}
+
+		// Clamp just in case someone puts 150 or -10 in config
+		chancePercent = Math.min(100, Math.max(0, chancePercent));
+
 		double chance = Math.random();
-		SR.LOGGER.debug("SI chance=" + chance + " line:348");
-		SR.LOGGER.debug("SI chancepercent=" + chancepercent + " line:349");
-		if (chancepercent > chance){
-			return true;
-		}
-		return false;
+		SR.logger.debug("spawnIt: roll=" + chance);
+		SR.logger.debug("spawnIt: chancePercent=" + chancePercent + " (=" + (chancePercent / 100.0) + ")");
+
+		return chance < (chancePercent / 100.0);
 	}
 
 	public boolean checkradius(Entity entity, int radius){
 		Block block = entity.getLocation().getBlock();
-		for(Entity en : block.getWorld().getEntities()) {
-			if(en instanceof Shulker) {
-				Shulker shulker = (Shulker) en;
-				double distance = shulker.getLocation().distance(block.getLocation());
+
+		for(Entity en : getEntitiesAroundBlock(block)) {
+			if(en instanceof Shulker shulker) {
+                double distance = shulker.getLocation().distance(block.getLocation());
 				if(distance < radius) {
+					block.getChunk();
 					return true;
 					//shulker.teleport(block.getLocation());
 				}
 			}
 		}
 		return false;
+	}
+
+	public List<Entity> getEntitiesAroundBlock(Block block){
+		List<Entity> entities = new ArrayList<>();
+		Chunk chunk1,chunk2, chunk3, chunk4, chunk5, chunk6, chunk7, chunk8, chunk9;
+		Location loc = block.getLocation();
+		chunk1 = block.getChunk();
+		for(Entity en : chunk1.getEntities()) {
+			entities.add(en);
+		}
+		loc = loc.add(16, 0, 0);
+		chunk2 = loc.getChunk();
+		if(chunk2.isLoaded()) {
+			for(Entity en : chunk2.getEntities()) {
+				entities.add(en);
+			}
+		}
+		loc = loc.add(0, 0, 16);
+		chunk3 = loc.getChunk();
+		if(chunk3.isLoaded()) {
+			for(Entity en : chunk3.getEntities()) {
+				entities.add(en);
+			}
+		}
+		loc = loc.subtract(16, 0, 0);
+		chunk4 = loc.getChunk();
+		if(chunk4.isLoaded()) {
+			for(Entity en : chunk4.getEntities()) {
+				entities.add(en);
+			}
+		}
+		loc = loc.subtract(16, 0, 0);
+		chunk5 = loc.getChunk();
+		if(chunk5.isLoaded()) {
+			for(Entity en : chunk5.getEntities()) {
+				entities.add(en);
+			}
+		}
+		loc = loc.subtract(0, 0, 16);
+		chunk6 = loc.getChunk();
+		if(chunk6.isLoaded()) {
+			for(Entity en : chunk6.getEntities()) {
+				entities.add(en);
+			}
+		}
+		loc = loc.subtract(0, 0, 16);
+		chunk7 = loc.getChunk();
+		if(chunk7.isLoaded()) {
+			for(Entity en : chunk7.getEntities()) {
+				entities.add(en);
+			}
+		}
+		loc = loc.add(16, 0, 0);
+		chunk8 = loc.getChunk();
+		if(chunk8.isLoaded()) {
+			for(Entity en : chunk8.getEntities()) {
+				entities.add(en);
+			}
+		}
+		loc = loc.add(16, 0, 0);
+		chunk9 = loc.getChunk();
+		if(chunk9.isLoaded()) {
+			for(Entity en : chunk9.getEntities()) {
+				entities.add(en);
+			}
+		}
+		return entities;
 	}
 
 	public boolean isEndCity (Block block){ // &&isEndCity(entity.getLocation().getBlock())

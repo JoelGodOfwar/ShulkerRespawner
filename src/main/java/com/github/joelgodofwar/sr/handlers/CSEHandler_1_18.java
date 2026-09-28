@@ -1,5 +1,6 @@
-package com.github.joelgodofwar.sr.events;
+package com.github.joelgodofwar.sr.handlers;
 
+import lib.github.joelgodofwar.coreutils.util.Version;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -52,77 +53,57 @@ public class CSEHandler_1_18 implements Listener {
 
 		if ( (entity instanceof Enderman) || (entity instanceof Squid) ){
 			try {
-				SR.LOGGER.debug("CSE 1.18.* entity=\"" + entity.getType() + "\"");
-				SR.LOGGER.debug("CSE Environment=\"" + entity.getWorld().getEnvironment().toString() + "\"");
-				SR.LOGGER.debug("CSE Biome=\"" + entity.getLocation().getBlock().getBiome().toString() + "\"");
-				SR.LOGGER.debug("CSE isEndCity=\"" + isEndCity(entity.getLocation().getBlock()) + "\"");
+				SR.logger.debug("CSE 1.18.* entity=\"" + entity.getType() + "\"");
+				SR.logger.debug("CSE Environment=\"" + entity.getWorld().getEnvironment().toString() + "\"");
+				SR.logger.debug("CSE Biome=\"" + entity.getLocation().getBlock().getBiome().toString() + "\"");
+				SR.logger.debug("CSE isEndCity=\"" + isEndCity(entity.getLocation().getBlock()) + "\"");
 
 				Location location = entity.getLocation();
-				SR.LOGGER.debug("location=" + location);
-				SR.LOGGER.debug("CSE block=" + entity.getLocation().getBlock().getType().toString());
-				SR.LOGGER.debug("CSE " + ChatColor.GREEN + "isEndCity=" + isEndCity(entity.getLocation().getBlock()) + ChatColor.RESET);
+				SR.logger.debug("location=" + location);
+				SR.logger.debug("CSE block=" + entity.getLocation().getBlock().getType().toString());
+				SR.logger.debug("CSE " + ChatColor.GREEN + "isEndCity=" + isEndCity(entity.getLocation().getBlock()) + ChatColor.RESET);
 				if(entity.getLocation().subtract(0, 3, 0).getBlock().getType().toString().contains("PURPUR")||
 						entity.getLocation().subtract(0, 2, 0).getBlock().getType().toString().contains("PURPUR")||
 						entity.getLocation().subtract(0, 1, 0).getBlock().getType().toString().contains("PURPUR")
 						||entity.getLocation().getBlock().getType().toString().contains("PURPUR")){
 
 					World world = entity.getWorld();
-					SR.LOGGER.debug("CSE radius_between_spawns=" + SR.getConfig().getInt("radius_between_spawns", 10));
+					SR.logger.debug("CSE radius_between_spawns=" + SR.getConfig().getInt("radius_between_spawns", 10));
 					if(!checkradius(entity, SR.getConfig().getInt("radius_between_spawns", 10))){ //5
 
 
 						if(isEndCity(entity.getLocation().getBlock())){
-							SR.LOGGER.debug("CSE radius=" + SR.getConfig().getInt("radius_between_spawns", 10));
+							SR.logger.debug("CSE radius=" + SR.getConfig().getInt("radius_between_spawns", 10));
 
 							String packageName = SR.getServer().getClass().getPackage().getName();
 							String version = packageName.substring(packageName.lastIndexOf('.') + 2);
-							if(SR.getMCVersion().equals("1.18")) {
-
+							if( SR.CURRENT_MINECRAFT_VERSION.isVersion(Version.MC_1_18) ) {
 								boolean result = ShulkerRespawnerLib.playerInsideStructure(entity, version, debug);
-								SR.LOGGER.debug("result=" + result);
+								SR.logger.debug("result=" + result);
 								if(!result) {
-									SR.LOGGER.debug("Enderman is not in an EndCity.");
+									SR.logger.debug("Enderman is not in an EndCity.");
 									return;
 								}
-
-							}else if(SR.getMCVersion().equals("1.18.1")) {
-
-								boolean result = ShulkerRespawnerLib.playerInsideStructure(entity, version, debug);
-								SR.LOGGER.debug("result=" + result);
-								if(!result) {
-									SR.LOGGER.debug("Enderman is not in an EndCity.");
-									return;
-								}
-
-							}else if(SR.getMCVersion().equals("1.18.2")) {
-
-								boolean result = ShulkerRespawnerLib.playerInsideStructure(entity, version, debug);
-								SR.LOGGER.debug("result=" + result);
-								if(!result) {
-									SR.LOGGER.debug("Enderman is not in an EndCity.");
-									return;
-								}
-
 							}
 						}else{
-							SR.LOGGER.debug("endcity not found");
+							SR.logger.debug("endcity not found");
 							return;
 						}
 						boolean spawnCheck = SpawnIt(SR.getConfig().getDouble("enderman_to_shulker_chance.rate", 0.75));
 						if(spawnCheck) {
 							event.setCancelled(true);
-							SR.LOGGER.debug(ChatColor.GREEN + "CSE Enderman tried to spawn at " + location + " and a shulker was spawned in it's place.");
+							SR.logger.debug(ChatColor.GREEN + "CSE Enderman tried to spawn at " + location + " and a shulker was spawned in it's place.");
 							world.spawn(location, Shulker.class);
 						}else {
-							SR.LOGGER.debug(ChatColor.GREEN + "CSE chance failed Enderman spawned at " + location);
+							SR.logger.debug(ChatColor.GREEN + "CSE chance failed Enderman spawned at " + location);
 						}
 					}else{
-						SR.LOGGER.debug("CSE Radius too close");
+						SR.logger.debug("CSE Radius too close");
 					}
 				}else {
-					SR.LOGGER.debug("CSE Block Error.");
+					SR.logger.debug("CSE Block Error.");
 				}
-				SR.LOGGER.debug("CSE End CSE");
+				SR.logger.debug("CSE End CSE");
 			}catch(Exception e) {
 				SR.reporter.reportDetailed(this, Report.newBuilder(PluginLibrary.ERROR_HANDLING_CREATURESPAWNEVENT).error(e));
 			}
@@ -131,12 +112,12 @@ public class CSEHandler_1_18 implements Listener {
 
 	public boolean SpawnIt(double chancepercent){// TODO: DropIt
 		if(!SR.getConfig().getBoolean("enderman_to_shulker_chance.enabled", false)) {
-			SR.LOGGER.debug("SI  enderman_to_shulker_chance.enabled=false, returning trueline:344");
+			SR.logger.debug("SI  enderman_to_shulker_chance.enabled=false, returning trueline:344");
 			return true;
 		}
 		double chance = Math.random();
-		SR.LOGGER.debug("SI chance=" + chance + " line:348");
-		SR.LOGGER.debug("SI chancepercent=" + chancepercent + " line:349");
+		SR.logger.debug("SI chance=" + chance + " line:348");
+		SR.logger.debug("SI chancepercent=" + chancepercent + " line:349");
 		if (chancepercent > chance){
 			return true;
 		}

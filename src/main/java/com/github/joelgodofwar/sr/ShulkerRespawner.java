@@ -1,98 +1,84 @@
 package com.github.joelgodofwar.sr;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.CopyOption;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import java.util.*;
-import java.util.concurrent.Callable;
-import java.util.concurrent.TimeUnit;
-
+import com.github.joelgodofwar.sr.common.PluginLibrary;
+import com.github.joelgodofwar.sr.common.error.DetailedErrorReporter;
+import com.github.joelgodofwar.sr.common.error.Report;
 import com.github.joelgodofwar.sr.enums.Perms;
-import com.github.joelgodofwar.sr.util.*;
+import com.github.joelgodofwar.sr.events.PlayerJoinEventHandler;
+import com.github.joelgodofwar.sr.events.PlayerQuitEventHandler;
+import com.github.joelgodofwar.sr.events.ShulkerDeathHandler;
+import com.github.joelgodofwar.sr.handlers.CSEHandler_1_17;
+import com.github.joelgodofwar.sr.handlers.CSEHandler_1_18;
+import com.github.joelgodofwar.sr.handlers.CSEHandler_1_19;
+import com.github.joelgodofwar.sr.i18n.Translator;
+import com.github.joelgodofwar.sr.util.Metrics;
+import com.github.joelgodofwar.sr.util.Utils;
+import com.tcoded.folialib.FoliaLib;
 import lib.github.joelgodofwar.coreutils.CoreUtils;
-import lib.github.joelgodofwar.coreutils.util.Version;
-import lib.github.joelgodofwar.coreutils.util.VersionChecker;
-import lib.github.joelgodofwar.coreutils.util.YmlConfiguration;
+import lib.github.joelgodofwar.coreutils.util.*;
 import lib.github.joelgodofwar.coreutils.util.common.PluginLogger;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Shulker;
-import org.bukkit.event.EventHandler;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.inventory.ItemStack;
-//import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
 
-import com.github.joelgodofwar.sr.common.PluginLibrary;
-
-import com.github.joelgodofwar.sr.common.error.DetailedErrorReporter;
-import com.github.joelgodofwar.sr.common.error.Report;
-import com.github.joelgodofwar.sr.events.CSEHandler_1_17;
-import com.github.joelgodofwar.sr.events.CSEHandler_1_18;
-import com.github.joelgodofwar.sr.events.CSEHandler_1_19;
-import com.github.joelgodofwar.sr.i18n.Translator;
-import com.tcoded.folialib.FoliaLib;
-
-import net.md_5.bungee.api.chat.TextComponent;
+import java.io.File;
+import java.util.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 
 public class ShulkerRespawner  extends JavaPlugin implements Listener{
 	/** Languages: čeština (cs_CZ), Deutsch (de_DE), English (en_US), Español (es_ES), Español (es_MX), Français (fr_FR), Italiano (it_IT), Magyar (hu_HU), 日本語 (ja_JP), 한국어 (ko_KR), Lolcat (lol_US), Melayu (my_MY), Nederlands (nl_NL), Polski (pl_PL), Português (pt_BR), Русский (ru_RU), Svenska (sv_SV), Türkçe (tr_TR), 中文(简体) (zh_CN), 中文(繁體) (zh_TW) */
 	//public final static Logger logger = Logger.getLogger("Minecraft");
-	static String THIS_NAME;
-	static String THIS_VERSION;
+	public static String THIS_NAME;
+	public static String THIS_VERSION;
 	/** update checker variables */
 	public int projectID = 73638; // https://spigotmc.org/resources/71236
-	public String githubURL = "https://github.com/JoelGodOfwar/ShulkerRespawner/raw/master/versioncheck/1.20/versions.xml";
-	boolean UpdateAvailable =  false;
+	public String githubURL = "https://github.com/JoelGodOfwar/ShulkerRespawner/raw/master/versioncheck/versions.xml";
+	public boolean UpdateAvailable =  false;
 	public String UColdVers;
 	public String UCnewVers;
 	public static boolean UpdateCheck;
 	public String DownloadLink = "https://www.spigotmc.org/resources/shulkerrespawner.73638";
 	/** end update checker variables */
-	Version MINIMUM_MINECRAFT_VERSION = new Version("1.20");
-	Version MAXIMUM_MINECRAFT_VERSION = new Version("1.21.10");
-	Version CURRENT_MINECRAFT_VERSION = Version.getCurrentVersion();
+	public Version MINIMUM_MINECRAFT_VERSION = new Version("1.20");
+	public Version MAXIMUM_MINECRAFT_VERSION = new Version("26.3");
+	public Version CURRENT_MINECRAFT_VERSION = Version.getCurrentVersion();
 	public static String daLang;
 	public boolean debug;
 	File langFile;
 	FileConfiguration lang;
-	YmlConfiguration config = new YmlConfiguration(this);
+	YmlConfiguration config = new YmlConfiguration();
 	YamlConfiguration oldconfig = new YamlConfiguration();
 	public final NamespacedKey NAME_KEY = new NamespacedKey(this, "shulker");
-	String configVersion = "1.0.1";
+	String configVersion = "1.0.2";
 	String pluginName = THIS_NAME;
 	Translator lang2;
 	public FoliaLib foliaLib;
 	public String jarfilename = this.getFile().getAbsoluteFile().toString();
 	public static DetailedErrorReporter reporter;
 	public boolean colorful_console = true;
-	public PluginLogger LOGGER;
+	public PluginLogger logger;
 	public CoreUtils coreUtils;
+	public final Map<Player, Random> chanceRandoms = new ConcurrentHashMap<>();
+	public String jar_file_name = this.getFile().getAbsoluteFile().toString();
 
 	@SuppressWarnings("unused") @Override // TODO: onEnable
 	public void onEnable(){
 		long startTime = System.currentTimeMillis();
-		LOGGER = new PluginLogger(this);
 		reporter = new DetailedErrorReporter(this);
 		UpdateCheck = getConfig().getBoolean("auto_update_check", true);
 		debug = getConfig().getBoolean("debug", false);
@@ -106,35 +92,37 @@ public class ShulkerRespawner  extends JavaPlugin implements Listener{
 		}else {
 			pluginName = THIS_NAME;
 		}
+		this.logger = new PluginLogger(pluginName, () -> debug);
+		CoreUtils.initLogger(logger);
 
 		foliaLib = new FoliaLib(this);
 
-		LOGGER.log(ChatColor.YELLOW + "**************************************" + ChatColor.RESET);
-		LOGGER.log(ChatColor.GREEN + " v" + THIS_VERSION + ChatColor.RESET + " Loading...");
-		LOGGER.log("Server Version: " + getServer().getVersion());
+		logger.log(ChatColor.YELLOW + "**************************************" + ChatColor.RESET);
+		logger.log(ChatColor.GREEN + " v" + THIS_VERSION + ChatColor.RESET + " Loading...");
+		logger.log("Server Version: " + getServer().getVersion());
 
 		// Handle unexpected Minecraft versions
 		Version checkVersion = this.verifyMinecraftVersion();
 
-		LOGGER.log("Loading config file...");
+		logger.log("Loading config file...");
 		//**  Check for config */
 		try{
 			if(!this.getDataFolder().exists()){
-				LOGGER.log("Data Folder doesn't exist");
-				LOGGER.log("Creating Data Folder");
-				this.getDataFolder().mkdirs();
-				LOGGER.log("Data Folder Created at " + this.getDataFolder());
+				logger.log("Data Folder doesn't exist");
+				logger.log("Creating Data Folder");
+				boolean result = this.getDataFolder().mkdirs();
+				if(result) {
+					logger.log("Data Folder Created at " + this.getDataFolder());
+				}
 			}
 			File  file = new File(this.getDataFolder(), "config.yml");
 			this.getLogger().info("" + file);
 			if(!file.exists()){
-				LOGGER.log("config.yml not found, creating!");
+				logger.log("config.yml not found, creating!");
 				saveResource("config.yml", true);
 			}
 		}catch(Exception exception){
-			debug = true;
 			reporter.reportDetailed(this, Report.newBuilder(PluginLibrary.REPORT_CANNOT_CHECK_CONFIG).error(exception));
-			LOGGER.debug(ChatColor.RED + "debug has been set to true due to an exception.");
 		}
 		/* Check the config version */
 		try {
@@ -146,7 +134,7 @@ public class ShulkerRespawner  extends JavaPlugin implements Listener{
 		if(checkconfigversion != null){
 			if(!checkconfigversion.equalsIgnoreCase(configVersion)){
 				try {
-					copyFile_Java7(getDataFolder() + "" + File.separatorChar + "config.yml", getDataFolder() + "" + File.separatorChar + "old_config.yml");
+					FileUtils.copyFile(getDataFolder() + "" + File.separatorChar + "config.yml", getDataFolder() + "" + File.separatorChar + "old_config.yml");
 				} catch (Exception exception) {
 					reporter.reportDetailed(this, Report.newBuilder(PluginLibrary.REPORT_CANNOT_COPY_FILE).error(exception));
 				}
@@ -166,10 +154,10 @@ public class ShulkerRespawner  extends JavaPlugin implements Listener{
 				config.set("debug", oldconfig.get("debug", false));
 				config.set("lang", oldconfig.get("lang", "en_US"));
 				config.set("double_shulker_chance.enabled", oldconfig.get("double_shulker_chance.enabled", true));
-				config.set("double_shulker_chance.rate", oldconfig.get("double_shulker_chance.rate", 0.50));
+				config.set("double_shulker_chance.rate", Utils.toPercent( oldconfig.get("double_shulker_chance.rate", 0.50) ) );
 
 				config.set("enderman_to_shulker_chance.enabled", oldconfig.get("enderman_to_shulker_chance.enabled", false));
-				config.set("enderman_to_shulker_chance.rate", oldconfig.get("enderman_to_shulker_chance.rate", 0.75));
+				config.set("enderman_to_shulker_chance.rate", Utils.toPercent( oldconfig.get("enderman_to_shulker_chance.rate", 0.75) ) );
 				config.set("enderman_to_shulker_chance.spawn_enderman_on_fail", oldconfig.get("enderman_to_shulker_chance.spawn_enderman_on_fail", true));
 				config.set("radius_between_spawns", oldconfig.get("radius_between_spawns", 10));
 				try {
@@ -177,21 +165,22 @@ public class ShulkerRespawner  extends JavaPlugin implements Listener{
 				} catch (Exception exception) {
 					reporter.reportDetailed(this, Report.newBuilder(PluginLibrary.REPORT_CANNOT_SAVE_CONFIG).error(exception));
 				}
-				LOGGER.log("config.yml has been updated");
+				logger.log("config.yml has been updated");
 			}
 		}
 
-		/* DEV check **/
+		//** DEV check **/
 		File jarfile = this.getFile().getAbsoluteFile();
-		if(jarfile.toString().contains("-DEV")){
-			debug = true;
-			LOGGER.log("jarfile contains dev, debug set to true.");
+		if (jarfile.toString().contains("-DEV")) {
+			CoreUtils.warn(ChatColor.RED + "YOU ARE USING A DEV=BUILD, PLEASE REPORT ANY ISSUES." + ChatColor.RESET);
+			CoreUtils.warn(ChatColor.RED + "jarfilename = " + StrUtils.Right(jar_file_name, jar_file_name.length() - jar_file_name.lastIndexOf(File.separatorChar)) + ChatColor.RESET);
+			//log("jarfile contains dev, debug set to true.");
 		}
 		getServer().getPluginManager().registerEvents(this, this);
 
 		/* Update Checker */
 		if(UpdateCheck){
-			LOGGER.log("Checking for updates...");
+			logger.log("Checking for updates...");
 			try {
 				VersionChecker updater = new VersionChecker(this, projectID, githubURL);
 				if(updater.checkForUpdates()) {
@@ -199,51 +188,53 @@ public class ShulkerRespawner  extends JavaPlugin implements Listener{
 					UpdateAvailable = true; // TODO: Update Checker
 					UColdVers = updater.oldVersion();
 					UCnewVers = updater.newVersion();
-
-					LOGGER.log("*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*");
-					LOGGER.log("* " + get("sr.version.message").replace("<MyPlugin>", THIS_NAME) );
-					LOGGER.log("* " + get("sr.version.old_vers") + ChatColor.RED + UColdVers );
-					LOGGER.log("* " + get("sr.version.new_vers") + ChatColor.GREEN + UCnewVers );
-					LOGGER.log("*");
-					LOGGER.log("* " + get("sr.version.please_update") );
-					LOGGER.log("*");
-					LOGGER.log("* " + get("sr.version.download") + ": " + DownloadLink + "/history");
-					LOGGER.log("* " + get("sr.version.donate.message") + ": https://ko-fi.com/joelgodofwar");
-					LOGGER.log("*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*");
-
+					logger.log("*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*");
+					logger.log("* " + get("sr.version.message").replace("<MyPlugin>", THIS_NAME) );
+					logger.log("* " + get("sr.version.old_vers") + ChatColor.RED + UColdVers );
+					logger.log("* " + get("sr.version.new_vers") + ChatColor.GREEN + UCnewVers );
+					logger.log("*");
+					logger.log("* " + get("sr.version.please_update") );
+					logger.log("*");
+					logger.log("* " + get("sr.version.download") + ": " + DownloadLink + "/history");
+					logger.log("* " + get("sr.version.donate.message") + ": https://ko-fi.com/joelgodofwar");
+					logger.log("*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*");
 				}else{
 					/* Up to date */
-					LOGGER.log("*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*");
-					LOGGER.log("* " + get("sr.version.curvers"));
-					LOGGER.log("* " + get("sr.version.donate") + ": https://ko-fi.com/joelgodofwar");
-					LOGGER.log("*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*");
+					logger.log("*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*");
+					logger.log("* " + get("sr.version.curvers"));
+					logger.log("* " + get("sr.version.donate") + ": https://ko-fi.com/joelgodofwar");
+					logger.log("*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*");
 					UpdateAvailable = false;
 				}
 			}catch(Exception exception) {
 				/* Error */
-				LOGGER.log(get("sr.version.update.error"));
+				logger.log(get("sr.version.update.error"));
 				reporter.reportDetailed(this, Report.newBuilder(PluginLibrary.REPORT_CANNOT_UPDATE_PLUGIN).error(exception));
 			}
 		}else {
 			/* auto_update_check is false so nag. */
-			LOGGER.log("*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*");
-			LOGGER.log("* " + get("sr.version.donate.message") + ": https://ko-fi.com/joelgodofwar");
-			LOGGER.log("*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*");
+			logger.log("*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*");
+			logger.log("* " + get("sr.version.donate.message") + ": https://ko-fi.com/joelgodofwar");
+			logger.log("*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*");
 		}
 
+		coreUtils = new CoreUtils(this);
 		String packageName = this.getServer().getClass().getPackage().getName();
 		if( CURRENT_MINECRAFT_VERSION.isVersion(Version.MC_1_17) ){
 			getServer().getPluginManager().registerEvents( new CSEHandler_1_17(this), this);
 		}else if( CURRENT_MINECRAFT_VERSION.isVersion(Version.MC_1_18) ){
 			getServer().getPluginManager().registerEvents( new CSEHandler_1_18(this), this);
-		}else if( CURRENT_MINECRAFT_VERSION.isBetween("1.19", "1.21.10") ){
+		}else if( CURRENT_MINECRAFT_VERSION.isBetween("1.19", "26.2") ){
 			getServer().getPluginManager().registerEvents( new CSEHandler_1_19(this), this);
 		}else{
-			LOGGER.warn(get("sr.message.notcompatible") + CURRENT_MINECRAFT_VERSION);
-			LOGGER.warn(ChatColor.RED + "ATTEMPTING TO LOAD NEWEST EVENT HANDLER..." + ChatColor.RESET);
+			logger.warn(get("sr.message.notcompatible") + CURRENT_MINECRAFT_VERSION);
+			logger.warn(ChatColor.RED + "ATTEMPTING TO LOAD NEWEST EVENT HANDLER..." + ChatColor.RESET);
 			getServer().getPluginManager().registerEvents( new CSEHandler_1_19(this), this);
 		}
-		coreUtils = new CoreUtils(this);
+
+		getServer().getPluginManager().registerEvents(new ShulkerDeathHandler(this), this);
+		getServer().getPluginManager().registerEvents(new PlayerQuitEventHandler(this), this);
+		getServer().getPluginManager().registerEvents(new PlayerJoinEventHandler(this), this);
 
 		consoleInfo(ChatColor.GREEN + "ENABLED" + ChatColor.RESET + " - Loading took " + LoadTime(startTime));
 
@@ -306,7 +297,6 @@ public class ShulkerRespawner  extends JavaPlugin implements Listener{
 				}
 			}));
 		}catch (Exception exception){
-			debug = true;
 			reporter.reportDetailed(this, Report.newBuilder(PluginLibrary.REPORT_METRICS_LOAD_ERROR).error(exception));
 		}
 
@@ -339,12 +329,12 @@ public class ShulkerRespawner  extends JavaPlugin implements Listener{
 	}
 
 	public void consoleInfo(String state) {
-		//LOGGER.log(ChatColor.YELLOW + "**************************************" + ChatColor.RESET);
-		LOGGER.log(ChatColor.YELLOW + " v" + THIS_VERSION + ChatColor.RESET + " is " + state  + ChatColor.RESET);
-		//LOGGER.log(ChatColor.YELLOW + "**************************************" + ChatColor.RESET);
+		//logger.log(ChatColor.YELLOW + "**************************************" + ChatColor.RESET);
+		logger.log(ChatColor.YELLOW + " v" + THIS_VERSION + ChatColor.RESET + " is " + state  + ChatColor.RESET);
+		//logger.log(ChatColor.YELLOW + "**************************************" + ChatColor.RESET);
 	}
 
-	@EventHandler
+	/* @EventHandler
 	public void onPlayerJoinEvent(PlayerJoinEvent event) {
 		Player player = event.getPlayer();
 
@@ -362,85 +352,49 @@ public class ShulkerRespawner  extends JavaPlugin implements Listener{
 		}
 
 		if(player.getDisplayName().equals("JoelYahwehOfWar")||player.getDisplayName().equals("JoelGodOfWar")){
-
 			player.sendMessage(THIS_NAME + " " + THIS_VERSION + " Hello father!");
 		}
-	}
-	public void sendJson(Player player, String string) {
-		Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "tellraw \"" + player.getName() +
-				"\" " + string);
-	}
+	}//*/
 
-	public boolean SpawnIt(double chancepercent){
-		if(!getConfig().getBoolean("enderman_to_shulker_chance.enabled", false)) {
-			LOGGER.debug("SI  enderman_to_shulker_chance.enabled=false, returning trueline:344");
-			return true;
-		}
-		double chance = Math.random();
-		LOGGER.debug("SI chance=" + chance + " line:348");
-		LOGGER.debug("SI chancepercent=" + chancepercent + " line:349");
-		if (chancepercent > chance){
-			return true;
-		}
-		return false;
-	}
-
-	public boolean checkradius(Entity entity, int radius){
-		Block block = entity.getLocation().getBlock();
-		for(Entity en : block.getWorld().getEntities()) {
-			if(en instanceof Shulker) {
-				Shulker shulker = (Shulker) en;
-				double distance = shulker.getLocation().distance(block.getLocation());
-				if(distance < radius) {
-					return true;
-					//shulker.teleport(block.getLocation());
-				}
-			}
-		}
-		return false;
-	}
-
-	@EventHandler
+	/* @EventHandler
 	public void onEntityDeathEvent(EntityDeathEvent event){
 		if(getConfig().getBoolean("double_shulker_chance.enabled", true)){
 			if(event.getEntity() instanceof Shulker){
 				//if(debug){logDebug("Shulker killed by " + event.getEntity().getKiller().getName());}
 				if(event.getEntity().getKiller() instanceof Player){
-					LOGGER.debug("Killer was a player");
+					logger.debug("Killer was a player");
 					ItemStack shulkershell = new ItemStack(Material.SHULKER_SHELL, 1);
 					//event.getEntity().getWorld().dropItemNaturally(event.getEntity().getLocation(), shulkershell);
 					ItemStack itemstack = event.getEntity().getKiller().getInventory().getItemInMainHand();
 					if(itemstack != null){
-						LOGGER.debug("itemstack=" + itemstack.getType().toString() + " line:290");
-						int enchantmentlevel = itemstack.getEnchantmentLevel(Enchantment.LOOT_BONUS_MOBS);//.containsEnchantment(Enchantment.LOOT_BONUS_MOBS);
-						LOGGER.debug("enchantmentlevel=" + enchantmentlevel + " line:292");
+						logger.debug("itemstack=" + itemstack.getType().toString() );
+						int enchantmentlevel = itemstack.getEnchantmentLevel(CoreUtils.LOOTING);
+						logger.debug("enchantmentlevel=" + enchantmentlevel );
 						double enchantmentlevelpercent = ((double)enchantmentlevel / 100);
-						LOGGER.debug("enchantmentlevelpercent=" + enchantmentlevelpercent + " line:294");
+						logger.debug("enchantmentlevelpercent=" + enchantmentlevelpercent );
 						double chance = Math.random();
-						LOGGER.debug("chance=" + chance + " line:296");
-						double chancepercent = getConfig().getDouble("double_shulker_chance.rate", 0.50); /* Set to check config.yml later*/ // TODO:
-						LOGGER.debug("chancepercent=" + chancepercent + " line:298");
+						logger.debug("chance=" + chance );
+						double chancepercent = getConfig().getDouble("double_shulker_chance.rate", 0.50);
+						logger.debug("chancepercent=" + chancepercent );
 						chancepercent = chancepercent + enchantmentlevelpercent;
-						LOGGER.debug("chancepercent2=" + chancepercent + " line:300");
+						logger.debug("chancepercent2=" + chancepercent );
 						//if(chancepercent > 0.00 && chancepercent < 0.99){
 						if (chancepercent > chance){
 							if(event.getDrops().contains(shulkershell)){
 								event.getDrops().add(shulkershell);
 								//broadcastmsg("");
-								LOGGER.debug(ChatColor.GREEN + "Shulker shell added to Drops" + ChatColor.RESET);
+								logger.debug(ChatColor.GREEN + "Shulker shell added to Drops" + ChatColor.RESET);
 							}else{
 								event.getDrops().add(shulkershell);
 								event.getDrops().add(shulkershell);
-								LOGGER.debug(ChatColor.GREEN + "2 Shulker shells added to Drops" + ChatColor.RESET);
+								logger.debug(ChatColor.GREEN + "2 Shulker shells added to Drops" + ChatColor.RESET);
 							}
-
-							//event.getDrops().add(new ItemStack(Material.CREEPER_HEAD, 1));
 						}
 					}
 				}
 			}
 		}
-	}
+	}//*/
 
 	public boolean isEndCity (Block block){ // &&isEndCity(entity.getLocation().getBlock())
 		Location block1;
@@ -502,7 +456,7 @@ public class ShulkerRespawner  extends JavaPlugin implements Listener{
 					sender.sendMessage(ChatColor.WHITE + " /sr reload - " + get("sr.command.reload"));//subject to server admin approval");
 				}
 				if( Perms.TOGGLE_DEBUG.hasPermissionOrOp(sender) ){
-					sender.sendMessage(ChatColor.WHITE + " /sr toggledebug - " + get("sr.message.toggledebug"));//Cancels SinglePlayerSleep");
+					sender.sendMessage(ChatColor.WHITE + " /sr toggledebug|td - " + get("sr.message.toggledebug"));//Cancels SinglePlayerSleep");
 				}
 				if( Perms.SHOW_UPDATE_AVAILABLE.hasPermissionOrOp(sender) ){
 					sender.sendMessage(ChatColor.RESET + " /sr update - " + get("sr.command.update"));//Checks if there is an update.
@@ -543,23 +497,23 @@ public class ShulkerRespawner  extends JavaPlugin implements Listener{
 							UColdVers = updater.oldVersion();
 							UCnewVers = updater.newVersion();
 
-							LOGGER.log("*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*");
-							LOGGER.log("* " + get("sr.version.message").replace("<MyPlugin>", THIS_NAME) );
-							LOGGER.log("* " + get("sr.version.old_vers") + ChatColor.RED + UColdVers );
-							LOGGER.log("* " + get("sr.version.new_vers") + ChatColor.GREEN + UCnewVers );
-							LOGGER.log("*");
-							LOGGER.log("* " + get("sr.version.please_update") );
-							LOGGER.log("*");
-							LOGGER.log("* " + get("sr.version.download") + ": " + DownloadLink + "/history");
-							LOGGER.log("* " + get("sr.version.donate.message") + ": https://ko-fi.com/joelgodofwar");
-							LOGGER.log("*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*");
+							logger.log("*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*");
+							logger.log("* " + get("sr.version.message").replace("<MyPlugin>", THIS_NAME) );
+							logger.log("* " + get("sr.version.old_vers") + ChatColor.RED + UColdVers );
+							logger.log("* " + get("sr.version.new_vers") + ChatColor.GREEN + UCnewVers );
+							logger.log("*");
+							logger.log("* " + get("sr.version.please_update") );
+							logger.log("*");
+							logger.log("* " + get("sr.version.download") + ": " + DownloadLink + "/history");
+							logger.log("* " + get("sr.version.donate.message") + ": https://ko-fi.com/joelgodofwar");
+							logger.log("*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*");
 
 						}else{
 							/* Up to date */
-							LOGGER.log("*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*");
-							LOGGER.log("* " + get("sr.version.curvers"));
-							LOGGER.log("* " + get("sr.version.donate") + ": https://ko-fi.com/joelgodofwar");
-							LOGGER.log("*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*");
+							logger.log("*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*");
+							logger.log("* " + get("sr.version.curvers"));
+							logger.log("* " + get("sr.version.donate") + ": https://ko-fi.com/joelgodofwar");
+							logger.log("*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*");
 							UpdateAvailable = false;
 						}
 					}catch(Exception exception) {
@@ -573,7 +527,7 @@ public class ShulkerRespawner  extends JavaPlugin implements Listener{
 						@Override public void run() {
 							try {
 								Bukkit.getConsoleSender().sendMessage("Checking for updates...");
-								VersionChecker updater = new VersionChecker(THIS_VERSION, projectID, githubURL, LOGGER);
+								VersionChecker updater = new VersionChecker(THIS_VERSION, projectID, githubURL, logger);
 								if(updater.checkForUpdates()) {
 									UpdateAvailable = true;
 									UColdVers = updater.oldVersion();
@@ -712,25 +666,6 @@ public class ShulkerRespawner  extends JavaPlugin implements Listener{
 		return null;
 	}
 
-	public static void copyFile_Java7(String origin, String destination) throws IOException {
-		Path FROM = Paths.get(origin);
-		Path TO = Paths.get(destination);
-		//overwrite the destination file if it exists, and copy
-		// the file attributes, including the rwx permissions
-		CopyOption[] options = new CopyOption[]{
-				StandardCopyOption.REPLACE_EXISTING,
-				StandardCopyOption.COPY_ATTRIBUTES
-		};
-		Files.copy(FROM, TO, options);
-	}
-
-	public static String getMCVersion() {
-		String strVersion = Bukkit.getVersion();
-		strVersion = strVersion.substring(strVersion.indexOf("MC: "), strVersion.length());
-		strVersion = strVersion.replace("MC: ", "").replace(")", "");
-		return strVersion;
-	}
-
 	public void onReload() {
 		long startTime = System.currentTimeMillis();
 		UpdateCheck = getConfig().getBoolean("auto_update_check", true);
@@ -738,28 +673,26 @@ public class ShulkerRespawner  extends JavaPlugin implements Listener{
 		daLang = getConfig().getString("lang", "en_US");
 		oldconfig = new YamlConfiguration();
 
-		LOGGER.log(ChatColor.YELLOW + "**************************************" + ChatColor.RESET);
-		LOGGER.log(ChatColor.GREEN + THIS_NAME + " v" + THIS_VERSION + ChatColor.RESET + " Reloading...");
+		logger.log(ChatColor.YELLOW + "**************************************" + ChatColor.RESET);
+		logger.log(ChatColor.GREEN + THIS_NAME + " v" + THIS_VERSION + ChatColor.RESET + " Reloading...");
 
-		LOGGER.log("Loading config file...");
+		logger.log("Loading config file...");
 		/*  Check for config */
 		try{
 			if(!this.getDataFolder().exists()){
-				LOGGER.log("Data Folder doesn't exist");
-				LOGGER.log("Creating Data Folder");
+				logger.log("Data Folder doesn't exist");
+				logger.log("Creating Data Folder");
 				this.getDataFolder().mkdirs();
-				LOGGER.log("Data Folder Created at " + this.getDataFolder());
+				logger.log("Data Folder Created at " + this.getDataFolder());
 			}
 			File  file = new File(this.getDataFolder(), "config.yml");
 			this.getLogger().info("" + file);
 			if(!file.exists()){
-				LOGGER.log("config.yml not found, creating!");
+				logger.log("config.yml not found, creating!");
 				saveResource("config.yml", true);
 			}
 		}catch(Exception exception){
-			debug = true;
 			reporter.reportDetailed(this, Report.newBuilder(PluginLibrary.REPORT_CANNOT_CHECK_CONFIG).error(exception));
-			LOGGER.debug("debug has been set to true due to an exception.");
 		}
 		/*  Check config version */
 		try {
@@ -771,7 +704,7 @@ public class ShulkerRespawner  extends JavaPlugin implements Listener{
 		if(checkconfigversion != null){
 			if(!checkconfigversion.equalsIgnoreCase(configVersion)){
 				try {
-					copyFile_Java7(getDataFolder() + "" + File.separatorChar + "config.yml", getDataFolder() + "" + File.separatorChar + "old_config.yml");
+					FileUtils.copyFile(getDataFolder() + "" + File.separatorChar + "config.yml", getDataFolder() + "" + File.separatorChar + "old_config.yml");
 				} catch (Exception exception) {
 					reporter.reportDetailed(this, Report.newBuilder(PluginLibrary.REPORT_CANNOT_SAVE_CONFIG).error(exception));
 				}
@@ -802,16 +735,21 @@ public class ShulkerRespawner  extends JavaPlugin implements Listener{
 				} catch (Exception exception) {
 					reporter.reportDetailed(this, Report.newBuilder(PluginLibrary.REPORT_CANNOT_SAVE_CONFIG).error(exception));
 				}
-				LOGGER.log("config.yml has been updated");
+				logger.log("config.yml has been updated");
 			}
 		}
 
-		/* DEV check **/
+		//** DEV check **/
 		File jarfile = this.getFile().getAbsoluteFile();
-		if(jarfile.toString().contains("-DEV")){
-			debug = true;
-			LOGGER.log("jarfile contains -DEV, debug set to true.");
+		if (jarfile.toString().contains("-DEV")) {
+			CoreUtils.warn(ChatColor.RED + "YOU ARE USING A DEV=BUILD, PLEASE REPORT ANY ISSUES." + ChatColor.RESET);
+			CoreUtils.warn(ChatColor.RED + "jarfilename = " + StrUtils.Right(jar_file_name, jar_file_name.length() - jar_file_name.lastIndexOf(File.separatorChar)) + ChatColor.RESET);
+			//log("jarfile contains dev, debug set to true.");
 		}
+
+
+		HandlerList.unregisterAll((Plugin) this);
+		getServer().getPluginManager().registerEvents(this, this);
 
 		String packageName = this.getServer().getClass().getPackage().getName();
 		if( CURRENT_MINECRAFT_VERSION.isVersion(Version.MC_1_17) ){
@@ -821,31 +759,13 @@ public class ShulkerRespawner  extends JavaPlugin implements Listener{
 		}else if( CURRENT_MINECRAFT_VERSION.isBetween("1.19", "1.21.10") ){
 			getServer().getPluginManager().registerEvents( new CSEHandler_1_19(this), this);
 		}else{
-			LOGGER.warn(get("sr.message.notcompatible") + CURRENT_MINECRAFT_VERSION);
-			LOGGER.warn(ChatColor.RED + "ATTEMPTING TO LOAD NEWEST EVENT HANDLER..." + ChatColor.RESET);
+			logger.warn(get("sr.message.notcompatible") + CURRENT_MINECRAFT_VERSION);
+			logger.warn(ChatColor.RED + "ATTEMPTING TO LOAD NEWEST EVENT HANDLER..." + ChatColor.RESET);
 			getServer().getPluginManager().registerEvents( new CSEHandler_1_19(this), this);
 		}
 
 		consoleInfo(ChatColor.GREEN + "ENABLED" + ChatColor.RESET + " - Reloading took " + LoadTime(startTime));
 	}
-
-	public String MCVersion(String string) {
-        return switch (string) {
-            case "1.13" -> "1_13_R1";
-            case "1.13.1" -> "1_13_R2";
-            case "1.14" -> "1_14_R1";
-            case "1.15" -> "1_15_R1";
-            case "1.16" -> "1_16_R1";
-            case "1.16.1" -> "1_16_R2";
-            case "1.16.2" -> "1_16_R3";
-            case "1.17" -> "1_17_R1";
-            case "1.17.1" -> "1_17_1_R1";
-            case "1.18" -> "1_18_R1";
-            case "1.18.1" -> "1_18_1_R1";
-            case "1.19" -> "1_19_R1";
-            default -> string;
-        };
-    }
 
 	public String LoadTime(long startTime) {
 		long elapsedTime = System.currentTimeMillis() - startTime;
@@ -876,10 +796,10 @@ public class ShulkerRespawner  extends JavaPlugin implements Listener{
 		try {
 			// We'll just warn the user for now
 			if (CURRENT_MINECRAFT_VERSION.compareTo(MINIMUM_MINECRAFT_VERSION) < 0) {
-				LOGGER.warn("Version " + CURRENT_MINECRAFT_VERSION + " is lower than the minimum " + MINIMUM_MINECRAFT_VERSION);
+				logger.warn("Version " + CURRENT_MINECRAFT_VERSION + " is lower than the minimum " + MINIMUM_MINECRAFT_VERSION);
 			}
 			if (CURRENT_MINECRAFT_VERSION.compareTo(MAXIMUM_MINECRAFT_VERSION) > 0) {
-				LOGGER.warn("Version " + CURRENT_MINECRAFT_VERSION + " has not yet been tested! Proceed with caution.");
+				logger.warn("Version " + CURRENT_MINECRAFT_VERSION + " has not yet been tested! Proceed with caution.");
 			}
 			return CURRENT_MINECRAFT_VERSION;
 		} catch (Exception exception) {

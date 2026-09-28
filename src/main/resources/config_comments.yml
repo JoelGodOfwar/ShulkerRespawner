@@ -1,0 +1,43 @@
+########################################################################################
+# IMPORTANT: THIS FILE IS FOR REFERENCE ONLY - DO NOT EDIT OR USE IN-GAME
+#
+# This config_comments.yml file is ONLY included in the JAR as documentation.
+# The plugin NEVER loads or reads this file at runtime.
+#
+# All actual configuration happens in config.yml.
+# Comments and explanations here are just to help you understand the options.
+#
+# If you edit this file, your changes will be ignored and lost on update/reload.
+#
+########################################################################################
+#
+# DO NOT CHANGE VERSION
+version: 1.0.2
+# Change to false to stop auto-update-check.
+auto_update_check: true
+# Set to true before sending a log about an issue.
+# Logs trace data required to pinpoint where errors are.
+debug: false
+# čeština (cs_CZ), Deutsch (de_DE), English (en_US), Español (es_ES), Español (es_MX), Français (fr_FR), Italiano (it_IT), Magyar (hu_HU), 日本語 (ja_JP), 한국어 (ko_KR), Lolcat (lol_US)
+# Melayu (my_MY), Nederlands (nl_NL), Polski (pl_PL), Português (pt_BR), Русский (ru_RU), Svenska (sv_SV), Türkçe (tr_TR), 中文(简体) (zh_CN), 中文(繁體) (zh_TW)
+lang: en_US
+# 
+console:
+# Should NEG use it's full name or NEG in console messages?
+  longpluginname: true
+# 
+double_shulker_chance:
+# should SR do a chance of double shulker_shell drop
+  enabled: true
+  # Chance in percent (whole number). 50 = 50%, 100 = always true
+  # Each level of Looting adds +1% (so Looting III = +3%)
+  rate: 50
+enderman_to_shulker_chance:
+# should SR do a chance of enderman becoming a shulker
+  enabled: false
+  # Chance in percent (whole number). 50 = 50%, 100 = always true
+  rate: 75
+# if the chance fails should an enderman spawn
+  spawn_enderman_on_fail: true
+# The distance bewteen entities for shulker to spawn
+radius_between_spawns: 10

@@ -1,13 +1,13 @@
 <versions>
   <v1.20>
     <release>
-      <version>1.20_1.0.21</version>
-      <notes>D1  Added 26.2 handler to Library.</notes>
+      <version>1.20_1.0.22</version>
+      <notes>D1 Update checker no longer treats .D builds as newer than their release.</notes>
       <link>https://dev.bukkit.org/projects/shulkerrespawner/files</link>
     </release>
     <developer>
-      <version>1.20_1.0.22.D1</version>
-      <notes>D1  Update checker no longer treats .D builds as newer than their release.</notes>
+      <version>1.20_1.0.23.D1</version>
+      <notes>D1 Library 0.3.9: version ranges in VersionMatcher; unknown newer MC uses last wrapper instead of disabling.</notes>
       <link>https://dev.bukkit.org/projects/shulkerrespawner/files</link>
     </developer>
   </v1.20>
